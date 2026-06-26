@@ -1,5 +1,10 @@
-// Stub — implemented by Agent A (builder verification). See CONTRACT.md.
 import { Module } from '@nestjs/common';
+import { RegistryController } from './registry.controller';
+import { RegistryService } from './registry.service';
 
-@Module({})
+@Module({
+  controllers: [RegistryController],
+  providers: [RegistryService],
+  exports: [RegistryService],
+})
 export class RegistryModule {}

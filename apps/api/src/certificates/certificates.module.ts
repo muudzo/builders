@@ -1,5 +1,9 @@
-// Stub — implemented by Agent A (QR Certificate of Occupation). See CONTRACT.md.
 import { Module } from '@nestjs/common';
+import { CertificatesController } from './certificates.controller';
+import { CertificatesService } from './certificates.service';
 
-@Module({})
+@Module({
+  controllers: [CertificatesController],
+  providers: [CertificatesService],
+})
 export class CertificatesModule {}
