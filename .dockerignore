@@ -1,0 +1,14 @@
+**/node_modules
+**/dist
+**/coverage
+.git
+.github
+*.log
+*.db
+*.db-journal
+*.sqlite
+**/.env
+**/.env.*
+!**/.env.example
+.DS_Store
+docker-compose*.yml

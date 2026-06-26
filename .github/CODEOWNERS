@@ -1,0 +1,8 @@
+# Default owners for everything. Replace with real GitHub handles/teams.
+* @muudzo
+
+# Security-sensitive surfaces — require explicit review.
+/apps/api/src/common/security/ @muudzo
+/apps/api/src/auth/            @muudzo
+/.github/                      @muudzo
+/docker/                       @muudzo

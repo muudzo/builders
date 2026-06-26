@@ -12,6 +12,7 @@
     "dev:web": "npm run dev -w web",
     "build": "npm run build -w api && npm run build -w web",
     "lint": "npm run lint -w api && npm run lint -w web",
+    "test": "npm run test -w api -- --passWithNoTests",
     "db:generate": "npm run prisma:generate -w api",
     "db:migrate": "npm run prisma:migrate -w api",
     "db:seed": "npm run prisma:seed -w api",
