@@ -1,0 +1,183 @@
+// Vaka — data model for Zimbabwe digital building control.
+// SQLite for local dev (zero infra); switch `provider` to "postgresql" for production
+// (self-hosted for data sovereignty). Enums are stored as String because SQLite has no
+// native enum; allowed values are mirrored in src/common/domain.ts.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// A local authority (city / town / rural district council). Tenant boundary.
+model Council {
+  id        String   @id @default(cuid())
+  name      String
+  code      String   @unique
+  region    String
+  createdAt DateTime @default(now())
+
+  users      User[]
+  inspectors Inspector[]
+  permits    Permit[]
+}
+
+/// Platform user. role ∈ APPLICANT | INSPECTOR | COUNCIL | MINISTRY (see domain.ts).
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  phone        String?
+  role         String
+  councilId    String?
+  inspectorId  String?  @unique
+  createdAt    DateTime @default(now())
+
+  council   Council?   @relation(fields: [councilId], references: [id])
+  inspector Inspector? @relation(fields: [inspectorId], references: [id])
+}
+
+/// Building inspector with a home base (for nearest-job routing).
+model Inspector {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  region    String
+  baseLat   Float
+  baseLng   Float
+  councilId String
+  createdAt DateTime @default(now())
+
+  council     Council      @relation(fields: [councilId], references: [id])
+  user        User?
+  inspections Inspection[]
+}
+
+/// National builder-registration register (council / CIFOZ / ZBCA).
+/// status ∈ VALID | EXPIRED | SUSPENDED.
+model BuilderRegistry {
+  id        String   @id @default(cuid())
+  regNumber String   @unique
+  name      String
+  category  String
+  status    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+/// An approved building application. Owns an ordered list of stages.
+/// status ∈ DRAFT | APPROVED | IN_PROGRESS | COMPLETED.
+model Permit {
+  id              String   @id @default(cuid())
+  ref             String   @unique
+  standNumber     String
+  suburb          String
+  projectType     String
+  ownerName       String
+  ownerPhone      String
+  builderRegNumber String
+  builderName     String
+  builderStatus   String // snapshot of registry status at approval time
+  status          String   @default("APPROVED")
+  councilId       String
+  createdAt       DateTime @default(now())
+
+  council     Council      @relation(fields: [councilId], references: [id])
+  stages      Stage[]
+  payments    Payment[]
+  inspections Inspection[]
+  certificate Certificate?
+}
+
+/// A single inspection stage in the gate.
+/// key ∈ FOUNDATION | DPC | DRAINAGE | SUPERSTRUCTURE | FINAL.
+/// status ∈ LOCKED | AWAITING_PAYMENT | PAID_AWAITING_INSPECTION | BOOKED | INSPECTED_PASS | INSPECTED_FAIL.
+model Stage {
+  id          String   @id @default(cuid())
+  permitId    String
+  key         String
+  label       String
+  order       Int
+  amountCents Int
+  currency    String   @default("USD")
+  status      String   @default("LOCKED")
+  bookedFor   DateTime?
+  updatedAt   DateTime @updatedAt
+
+  permit      Permit       @relation(fields: [permitId], references: [id], onDelete: Cascade)
+  payments    Payment[]
+  inspection  Inspection?
+
+  @@unique([permitId, key])
+}
+
+/// A Paynow transaction tied to a permit + stage. The platform holds no money;
+/// this is the audit record of a fee paid through the rail.
+/// method ∈ ECOCASH | ONEMONEY | CARD. status ∈ CREATED | PENDING | PAID | FAILED | CANCELLED.
+model Payment {
+  id              String   @id @default(cuid())
+  reference       String   @unique
+  permitId        String
+  stageId         String
+  method          String
+  payerPhone      String?
+  amountCents     Int
+  currency        String   @default("USD")
+  status          String   @default("CREATED")
+  paynowReference String?
+  pollUrl         String?
+  simulated       Boolean  @default(true)
+  paidAt          DateTime?
+  createdAt       DateTime @default(now())
+
+  permit Permit @relation(fields: [permitId], references: [id], onDelete: Cascade)
+  stage  Stage  @relation(fields: [stageId], references: [id], onDelete: Cascade)
+}
+
+/// An on-site inspection sign-off with evidence. result ∈ PASS | FAIL.
+model Inspection {
+  id          String   @id @default(cuid())
+  permitId    String
+  stageId     String   @unique
+  inspectorId String
+  result      String
+  notes       String
+  photoUrl    String
+  gpsLat      Float
+  gpsLng      Float
+  signedAt    DateTime @default(now())
+
+  permit    Permit    @relation(fields: [permitId], references: [id], onDelete: Cascade)
+  stage     Stage     @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  inspector Inspector @relation(fields: [inspectorId], references: [id])
+}
+
+/// QR-verifiable Certificate of Occupation, issued after FINAL pass.
+model Certificate {
+  id        String   @id @default(cuid())
+  permitId  String   @unique
+  serial    String   @unique
+  qrToken   String   @unique
+  issuedAt  DateTime @default(now())
+
+  permit Permit @relation(fields: [permitId], references: [id], onDelete: Cascade)
+}
+
+/// Append-only audit trail of every money / state transition.
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actorRole String
+  action    String
+  entity    String
+  entityId  String
+  metadata  String   @default("{}") // stringified JSON
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([createdAt])
+}

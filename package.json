@@ -1,0 +1,27 @@
+{
+  "name": "vaka",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Vaka — digital building inspection & permit platform for Zimbabwe (Paynow + Ministry of Local Government).",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,magenta \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "npm run start:dev -w api",
+    "dev:web": "npm run dev -w web",
+    "build": "npm run build -w api && npm run build -w web",
+    "lint": "npm run lint -w api && npm run lint -w web",
+    "db:generate": "npm run prisma:generate -w api",
+    "db:migrate": "npm run prisma:migrate -w api",
+    "db:seed": "npm run prisma:seed -w api",
+    "db:reset": "npm run prisma:reset -w api",
+    "db:setup": "npm run db:generate && npm run db:migrate && npm run db:seed"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
