@@ -1,0 +1,80 @@
+name: Deploy
+
+# Build immutable images and promote through environments.
+# - Tag push `v*.*.*`  -> full pipeline to production (production env requires manual approval).
+# - Manual dispatch    -> deploy to the chosen environment.
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        type: choice
+        options: [staging, production]
+        default: staging
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build-images:
+    name: Build & push images
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [api, web]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.app }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/${{ matrix.app }}.Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy-staging:
+    name: Deploy → staging
+    needs: build-images
+    if: github.event_name == 'push' || inputs.environment == 'staging'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - run: |
+          echo "Promote images to STAGING."
+          echo "Wire your target here (kubectl / docker compose over SSH / cloud CLI)."
+          echo "Authenticate with OIDC — never long-lived cloud keys."
+
+  deploy-production:
+    name: Deploy → production
+    needs: deploy-staging
+    if: startsWith(github.ref, 'refs/tags/v') || inputs.environment == 'production'
+    runs-on: ubuntu-latest
+    # 'production' is a protected GitHub Environment: configure required reviewers
+    # + wait timer in repo Settings → Environments so this step blocks on approval.
+    environment: production
+    steps:
+      - run: |
+          echo "Promote images to PRODUCTION (gated by environment approval)."
+          echo "Run DB migrations (prisma migrate deploy) before switching traffic."
