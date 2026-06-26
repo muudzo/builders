@@ -1,0 +1,104 @@
+.vk-permits-list {
+  padding-block: var(--vk-space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--vk-space-xl);
+}
+
+.vk-permits-list__header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--vk-space-md);
+}
+
+.vk-permits-list__title {
+  font-size: var(--vk-text-2xl);
+}
+
+.vk-permits-list__subtitle {
+  color: var(--vk-ink-soft);
+  margin-top: 0.3rem;
+}
+
+.vk-permits-list__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--vk-space-lg);
+}
+
+.vk-permit-card {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.vk-permit-card__inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vk-space-sm);
+  transition: transform var(--vk-duration-fast) var(--vk-ease-out-expo), box-shadow var(--vk-duration-fast) ease;
+}
+
+.vk-permit-card:hover .vk-permit-card__inner {
+  transform: translateY(-3px);
+  box-shadow: var(--vk-shadow-md);
+}
+
+.vk-permit-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--vk-space-sm);
+}
+
+.vk-permit-card__ref {
+  font-size: var(--vk-text-xs);
+  color: var(--vk-ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.vk-permit-card__title {
+  font-size: var(--vk-text-lg);
+  margin-top: 0.15rem;
+}
+
+.vk-permit-card__type {
+  font-size: var(--vk-text-sm);
+  color: var(--vk-ink-soft);
+}
+
+.vk-permit-card__progress {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.vk-permit-card__progress-track {
+  height: 0.4rem;
+  border-radius: var(--vk-radius-pill);
+  background: var(--vk-surface-sunken);
+  overflow: hidden;
+}
+
+.vk-permit-card__progress-fill {
+  height: 100%;
+  background: var(--vk-primary);
+  border-radius: var(--vk-radius-pill);
+  transition: width var(--vk-duration-slow) var(--vk-ease-out-expo);
+}
+
+.vk-permit-card__progress-label {
+  font-size: var(--vk-text-xs);
+  color: var(--vk-ink-faint);
+}
+
+.vk-permit-card__next {
+  font-size: var(--vk-text-sm);
+  color: var(--vk-ink-soft);
+}

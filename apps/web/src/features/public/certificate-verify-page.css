@@ -1,0 +1,93 @@
+.vk-verify-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--vk-space-xl);
+  padding: var(--vk-space-lg);
+  background: var(--vk-primary-strong);
+  background-image: radial-gradient(circle at 20% 20%, rgba(224, 160, 50, 0.18), transparent 55%);
+}
+
+.vk-verify-page__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: white;
+  font-family: var(--vk-font-display);
+  font-size: var(--vk-text-lg);
+  font-weight: 600;
+}
+
+.vk-verify-page__brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--vk-radius-sm);
+  background: var(--vk-accent);
+  color: var(--vk-primary-strong);
+  font-weight: 700;
+}
+
+.vk-verify-page__card {
+  width: 100%;
+  max-width: 30rem;
+  text-align: center;
+  padding: var(--vk-space-2xl) var(--vk-space-xl);
+}
+
+.vk-verify-page__badge {
+  display: inline-flex;
+  align-self: center;
+  background: var(--vk-status-pass-bg);
+  color: var(--vk-status-pass);
+  font-weight: 700;
+  font-size: var(--vk-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--vk-radius-pill);
+  margin-bottom: var(--vk-space-md);
+}
+
+.vk-verify-page__result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.vk-verify-page__title {
+  font-size: var(--vk-text-xl);
+  margin-bottom: var(--vk-space-lg);
+}
+
+.vk-verify-page__details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vk-space-sm);
+  text-align: left;
+  margin: 0;
+}
+
+.vk-verify-page__details div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--vk-space-md);
+  border-bottom: 1px solid var(--vk-border);
+  padding-bottom: var(--vk-space-xs);
+}
+
+.vk-verify-page__details dt {
+  font-size: var(--vk-text-sm);
+  color: var(--vk-ink-faint);
+}
+
+.vk-verify-page__details dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}

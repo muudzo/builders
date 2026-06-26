@@ -1,0 +1,48 @@
+.vk-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--vk-radius-pill);
+  font-size: var(--vk-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.vk-status-pill__dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.vk-status-pill--locked {
+  background: var(--vk-status-locked-bg);
+  color: var(--vk-status-locked);
+}
+
+.vk-status-pill--awaiting {
+  background: var(--vk-status-awaiting-bg);
+  color: var(--vk-status-awaiting);
+}
+
+.vk-status-pill--paid {
+  background: var(--vk-status-paid-bg);
+  color: var(--vk-status-paid);
+}
+
+.vk-status-pill--booked {
+  background: var(--vk-status-booked-bg);
+  color: var(--vk-status-booked);
+}
+
+.vk-status-pill--pass {
+  background: var(--vk-status-pass-bg);
+  color: var(--vk-status-pass);
+}
+
+.vk-status-pill--fail {
+  background: var(--vk-status-fail-bg);
+  color: var(--vk-status-fail);
+}

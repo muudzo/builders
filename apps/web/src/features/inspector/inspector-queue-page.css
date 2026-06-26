@@ -1,0 +1,78 @@
+.vk-inspector-queue {
+  padding-block: var(--vk-space-xl) var(--vk-space-2xl);
+  max-width: 36rem;
+}
+
+.vk-inspector-queue__title {
+  font-size: var(--vk-text-2xl);
+}
+
+.vk-inspector-queue__subtitle {
+  color: var(--vk-ink-soft);
+  margin-top: 0.3rem;
+  margin-bottom: var(--vk-space-lg);
+}
+
+.vk-inspector-queue__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vk-space-md);
+}
+
+.vk-job-card {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.vk-job-card__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  transition: transform var(--vk-duration-fast) var(--vk-ease-out-expo), box-shadow var(--vk-duration-fast) ease;
+}
+
+.vk-job-card:active .vk-job-card__inner {
+  transform: scale(0.985);
+}
+
+.vk-job-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vk-job-card__distance {
+  font-size: var(--vk-text-xs);
+  font-weight: 700;
+  color: var(--vk-primary);
+  background: var(--vk-primary-soft);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--vk-radius-pill);
+}
+
+.vk-job-card__stage {
+  font-size: var(--vk-text-lg);
+}
+
+.vk-job-card__address {
+  font-size: var(--vk-text-sm);
+  color: var(--vk-ink-soft);
+}
+
+.vk-job-card__owner {
+  font-size: var(--vk-text-sm);
+  color: var(--vk-ink-faint);
+}
+
+.vk-job-card__footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--vk-space-xs);
+  font-size: var(--vk-text-xs);
+  color: var(--vk-ink-faint);
+}
+
+.vk-job-card__fee {
+  font-weight: 700;
+}

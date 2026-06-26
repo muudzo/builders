@@ -1,0 +1,151 @@
+.vk-pay-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--vk-space-sm);
+}
+
+.vk-pay-modal__amount {
+  font-family: var(--vk-font-display);
+  font-size: var(--vk-text-2xl);
+  font-weight: 700;
+  color: var(--vk-primary-strong);
+}
+
+.vk-pay-modal__hint {
+  color: var(--vk-ink-soft);
+  font-size: var(--vk-text-sm);
+  max-width: 22rem;
+}
+
+.vk-pay-modal__methods {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--vk-space-sm);
+  width: 100%;
+  margin: var(--vk-space-sm) 0;
+}
+
+.vk-pay-modal__method {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: var(--vk-space-sm);
+  border-radius: var(--vk-radius-md);
+  border: 2px solid var(--vk-border);
+  background: var(--vk-surface);
+  font-size: var(--vk-text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--vk-duration-fast) ease, transform var(--vk-duration-fast) var(--vk-ease-out-expo);
+}
+
+.vk-pay-modal__method:hover {
+  border-color: var(--vk-primary);
+}
+
+.vk-pay-modal__method.is-selected {
+  border-color: var(--vk-primary);
+  background: var(--vk-primary-soft);
+  transform: translateY(-1px);
+}
+
+.vk-pay-modal__method-icon {
+  font-size: 1.5rem;
+}
+
+.vk-pay-modal__cta {
+  width: 100%;
+  margin-top: var(--vk-space-sm);
+}
+
+.vk-pay-modal--pending {
+  padding-block: var(--vk-space-md);
+}
+
+.vk-pay-modal__phone-icon {
+  font-size: 3rem;
+}
+
+.vk-pay-modal__pending-title {
+  font-family: var(--vk-font-display);
+  font-size: var(--vk-text-lg);
+  font-weight: 600;
+}
+
+.vk-pay-modal__pulse {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 3px solid var(--vk-accent);
+  animation: vk-pay-pulse 1.4s var(--vk-ease-out-expo) infinite;
+  margin: var(--vk-space-xs) 0;
+}
+
+@keyframes vk-pay-pulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vk-pay-modal__pulse {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+.vk-pay-modal__simulate-link {
+  background: none;
+  border: none;
+  color: var(--vk-ink-faint);
+  font-size: var(--vk-text-xs);
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: var(--vk-space-sm);
+}
+
+.vk-pay-modal__simulate-link:hover {
+  color: var(--vk-primary);
+}
+
+.vk-pay-modal--success .vk-pay-modal__success-mark {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: var(--vk-status-pass);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  animation: vk-success-pop var(--vk-duration-slow) var(--vk-ease-spring);
+}
+
+@keyframes vk-success-pop {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vk-pay-modal--success .vk-pay-modal__success-mark {
+    animation: none;
+  }
+}
+
+.vk-pay-modal__error {
+  color: var(--vk-status-fail);
+  font-weight: 600;
+}

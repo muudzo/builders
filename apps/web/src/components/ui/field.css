@@ -1,0 +1,49 @@
+.vk-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: left;
+}
+
+.vk-field__label {
+  font-size: var(--vk-text-sm);
+  font-weight: 600;
+  color: var(--vk-ink-soft);
+}
+
+.vk-field__input {
+  font-family: var(--vk-font-sans);
+  font-size: var(--vk-text-base);
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--vk-radius-sm);
+  border: 1px solid var(--vk-border-strong);
+  background: var(--vk-surface);
+  color: var(--vk-ink);
+  transition: border-color var(--vk-duration-fast) ease, box-shadow var(--vk-duration-fast) ease;
+}
+
+.vk-field__input:focus-visible {
+  border-color: var(--vk-primary);
+  box-shadow: 0 0 0 3px var(--vk-primary-soft);
+  outline: none;
+}
+
+.vk-field__input--textarea {
+  resize: vertical;
+  min-height: 5rem;
+}
+
+.vk-field__input--error {
+  border-color: var(--vk-status-fail);
+}
+
+.vk-field__hint {
+  font-size: var(--vk-text-xs);
+  color: var(--vk-ink-faint);
+}
+
+.vk-field__error {
+  font-size: var(--vk-text-xs);
+  color: var(--vk-status-fail);
+  font-weight: 600;
+}

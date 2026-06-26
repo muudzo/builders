@@ -1,0 +1,29 @@
+.vk-builder-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--vk-text-sm);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--vk-radius-sm);
+  margin: 0;
+}
+
+.vk-builder-badge--idle {
+  color: var(--vk-ink-faint);
+  background: var(--vk-surface-sunken);
+}
+
+.vk-builder-badge--valid {
+  color: var(--vk-status-pass);
+  background: var(--vk-status-pass-bg);
+}
+
+.vk-builder-badge--warn {
+  color: var(--vk-status-awaiting);
+  background: var(--vk-status-awaiting-bg);
+}
+
+.vk-builder-badge--unregistered {
+  color: var(--vk-status-fail);
+  background: var(--vk-status-fail-bg);
+}

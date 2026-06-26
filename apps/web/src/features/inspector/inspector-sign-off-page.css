@@ -1,0 +1,108 @@
+.vk-sign-off {
+  padding-block: var(--vk-space-xl) var(--vk-space-2xl);
+  max-width: 32rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vk-space-md);
+}
+
+.vk-sign-off__back {
+  font-size: var(--vk-text-sm);
+  color: var(--vk-ink-soft);
+  text-decoration: none;
+}
+
+.vk-sign-off__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vk-space-md);
+}
+
+.vk-sign-off__title {
+  font-size: var(--vk-text-xl);
+}
+
+.vk-sign-off__address,
+.vk-sign-off__owner {
+  font-size: var(--vk-text-sm);
+  color: var(--vk-ink-soft);
+}
+
+.vk-sign-off__fee {
+  font-weight: 700;
+  color: var(--vk-status-paid);
+  font-size: var(--vk-text-sm);
+}
+
+.vk-sign-off__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: var(--vk-space-sm);
+  border-top: 1px solid var(--vk-border);
+}
+
+.vk-sign-off__label {
+  font-size: var(--vk-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  color: var(--vk-ink-faint);
+}
+
+.vk-sign-off__gps-ok {
+  color: var(--vk-status-pass);
+  font-weight: 600;
+  font-size: var(--vk-text-sm);
+}
+
+.vk-sign-off__gps-error {
+  color: var(--vk-status-fail);
+  font-size: var(--vk-text-sm);
+}
+
+.vk-sign-off__photo-input {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--vk-radius-pill);
+  border: 1px solid var(--vk-border-strong);
+  font-size: var(--vk-text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  background: var(--vk-surface);
+}
+
+.vk-sign-off__photo-input input {
+  display: none;
+}
+
+.vk-sign-off__photo-preview {
+  width: 100%;
+  max-height: 12rem;
+  object-fit: cover;
+  border-radius: var(--vk-radius-md);
+  margin-top: 0.4rem;
+}
+
+.vk-sign-off__decision {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--vk-space-md);
+  margin-top: var(--vk-space-sm);
+}
+
+.vk-sign-off__decision .vk-button {
+  min-height: 4rem;
+  font-size: var(--vk-text-lg);
+  letter-spacing: 0.04em;
+}
+
+.vk-sign-off__error {
+  color: var(--vk-status-fail);
+  font-weight: 600;
+  font-size: var(--vk-text-sm);
+}

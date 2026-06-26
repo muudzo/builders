@@ -1,0 +1,19 @@
+.vk-card {
+  background: var(--vk-surface);
+  border-radius: var(--vk-radius-lg);
+  border: 1px solid var(--vk-border);
+  padding: var(--vk-space-lg);
+}
+
+.vk-card--flat {
+  box-shadow: none;
+}
+
+.vk-card--raised {
+  box-shadow: var(--vk-shadow-sm);
+}
+
+.vk-card--floating {
+  box-shadow: var(--vk-shadow-lg);
+  border-color: transparent;
+}

@@ -1,0 +1,37 @@
+.vk-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--vk-border);
+  border-radius: var(--vk-radius-md);
+  background: var(--vk-surface);
+}
+
+.vk-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--vk-text-sm);
+}
+
+.vk-table th,
+.vk-table td {
+  padding: 0.7rem 1rem;
+  white-space: nowrap;
+}
+
+.vk-table thead th {
+  background: var(--vk-surface-sunken);
+  color: var(--vk-ink-soft);
+  font-weight: 600;
+  font-size: var(--vk-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: sticky;
+  top: 0;
+}
+
+.vk-table tbody tr {
+  border-top: 1px solid var(--vk-border);
+}
+
+.vk-table tbody tr:hover {
+  background: var(--vk-primary-soft);
+}

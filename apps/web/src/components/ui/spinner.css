@@ -1,0 +1,42 @@
+.vk-spinner-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--vk-space-md);
+}
+
+.vk-spinner {
+  border-radius: 50%;
+  border: 3px solid var(--vk-border);
+  border-top-color: var(--vk-primary);
+  animation: vk-spin 800ms linear infinite;
+}
+
+.vk-spinner--sm {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-width: 2px;
+}
+
+.vk-spinner--md {
+  width: 2rem;
+  height: 2rem;
+}
+
+.vk-spinner--lg {
+  width: 3rem;
+  height: 3rem;
+  border-width: 4px;
+}
+
+@keyframes vk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vk-spinner {
+    animation-duration: 1600ms;
+  }
+}

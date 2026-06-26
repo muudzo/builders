@@ -1,0 +1,101 @@
+.vk-dashboard {
+  padding-block: var(--vk-space-xl) var(--vk-space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--vk-space-lg);
+}
+
+.vk-dashboard__header {
+  display: flex;
+  align-items: center;
+  gap: var(--vk-space-md);
+}
+
+.vk-dashboard__title {
+  font-size: var(--vk-text-2xl);
+}
+
+.vk-dashboard__readonly {
+  font-size: var(--vk-text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--vk-status-booked-bg);
+  color: var(--vk-status-booked);
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--vk-radius-pill);
+}
+
+.vk-dashboard__bento {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--vk-space-md);
+}
+
+@media (min-width: 720px) {
+  .vk-dashboard__bento {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .vk-dashboard__bento > :first-child {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+}
+
+.vk-dashboard__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--vk-space-md);
+}
+
+.vk-dashboard__section-title {
+  font-size: var(--vk-text-base);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--vk-ink-faint);
+  margin-bottom: var(--vk-space-md);
+}
+
+.vk-dashboard__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vk-space-xs);
+}
+
+.vk-dashboard__list-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--vk-text-sm);
+  padding-block: 0.3rem;
+  border-bottom: 1px solid var(--vk-border);
+}
+
+.vk-dashboard__activity {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vk-space-sm);
+}
+
+.vk-dashboard__activity-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding-bottom: var(--vk-space-sm);
+  border-bottom: 1px solid var(--vk-border);
+}
+
+.vk-dashboard__activity-action {
+  font-weight: 600;
+  font-size: var(--vk-text-sm);
+}
+
+.vk-dashboard__activity-meta {
+  font-size: var(--vk-text-xs);
+  color: var(--vk-ink-faint);
+}

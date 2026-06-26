@@ -1,0 +1,144 @@
+.vk-stage-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.vk-stage-timeline__item {
+  display: grid;
+  grid-template-columns: 2.75rem 1fr;
+  gap: var(--vk-space-md);
+  padding-bottom: var(--vk-space-xl);
+  position: relative;
+}
+
+.vk-stage-timeline__item:last-child {
+  padding-bottom: 0;
+}
+
+.vk-stage-timeline__rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.vk-stage-timeline__node {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--vk-font-display);
+  font-weight: 600;
+  font-size: var(--vk-text-base);
+  background: var(--vk-status-locked-bg);
+  color: var(--vk-status-locked);
+  border: 2px solid transparent;
+  flex-shrink: 0;
+  transition: background-color var(--vk-duration-normal) var(--vk-ease-out-expo),
+    color var(--vk-duration-normal) var(--vk-ease-out-expo),
+    transform var(--vk-duration-normal) var(--vk-ease-spring);
+}
+
+.vk-stage-timeline__connector {
+  flex: 1;
+  width: 3px;
+  background: var(--vk-border);
+  border-radius: 2px;
+  margin-block: 0.25rem;
+}
+
+.vk-stage-timeline__body {
+  padding-top: 0.3rem;
+}
+
+.vk-stage-timeline__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--vk-space-sm);
+}
+
+.vk-stage-timeline__label {
+  font-size: var(--vk-text-lg);
+  margin: 0;
+}
+
+.vk-stage-timeline__fee {
+  font-weight: 700;
+  color: var(--vk-ink-soft);
+  font-size: var(--vk-text-sm);
+  white-space: nowrap;
+}
+
+.vk-stage-timeline__status {
+  margin-top: 0.2rem;
+  font-size: var(--vk-text-sm);
+  font-weight: 600;
+}
+
+.vk-stage-timeline__meta {
+  margin-top: 0.3rem;
+  font-size: var(--vk-text-sm);
+  color: var(--vk-ink-faint);
+}
+
+.vk-stage-timeline__action {
+  margin-top: var(--vk-space-md);
+}
+
+/* Tone mapping for the node + connector + status text */
+.vk-stage-timeline__item--locked .vk-stage-timeline__node {
+  background: var(--vk-status-locked-bg);
+  color: var(--vk-status-locked);
+}
+.vk-stage-timeline__item--locked .vk-stage-timeline__status {
+  color: var(--vk-status-locked);
+}
+
+.vk-stage-timeline__item--awaiting .vk-stage-timeline__node {
+  background: var(--vk-status-awaiting-bg);
+  color: var(--vk-status-awaiting);
+  transform: scale(1.04);
+}
+.vk-stage-timeline__item--awaiting .vk-stage-timeline__status {
+  color: var(--vk-status-awaiting);
+}
+
+.vk-stage-timeline__item--paid .vk-stage-timeline__node {
+  background: var(--vk-status-paid-bg);
+  color: var(--vk-status-paid);
+}
+.vk-stage-timeline__item--paid .vk-stage-timeline__status {
+  color: var(--vk-status-paid);
+}
+
+.vk-stage-timeline__item--booked .vk-stage-timeline__node {
+  background: var(--vk-status-booked-bg);
+  color: var(--vk-status-booked);
+}
+.vk-stage-timeline__item--booked .vk-stage-timeline__status {
+  color: var(--vk-status-booked);
+}
+
+.vk-stage-timeline__item--pass .vk-stage-timeline__node {
+  background: var(--vk-status-pass);
+  color: white;
+}
+.vk-stage-timeline__item--pass .vk-stage-timeline__status {
+  color: var(--vk-status-pass);
+}
+.vk-stage-timeline__item--pass .vk-stage-timeline__connector {
+  background: var(--vk-status-pass);
+}
+
+.vk-stage-timeline__item--fail .vk-stage-timeline__node {
+  background: var(--vk-status-fail);
+  color: white;
+}
+.vk-stage-timeline__item--fail .vk-stage-timeline__status {
+  color: var(--vk-status-fail);
+}

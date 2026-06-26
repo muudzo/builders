@@ -1,0 +1,15 @@
+.vk-reconciliation {
+  padding-block: var(--vk-space-xl) var(--vk-space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--vk-space-md);
+}
+
+.vk-reconciliation__title {
+  font-size: var(--vk-text-2xl);
+}
+
+.vk-reconciliation__subtitle {
+  color: var(--vk-ink-soft);
+  margin-bottom: var(--vk-space-sm);
+}

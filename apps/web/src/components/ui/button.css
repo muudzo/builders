@@ -1,0 +1,114 @@
+.vk-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--vk-space-xs);
+  border-radius: var(--vk-radius-pill);
+  border: 1px solid transparent;
+  font-family: var(--vk-font-sans);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform var(--vk-duration-fast) var(--vk-ease-out-expo),
+    background-color var(--vk-duration-fast) ease, box-shadow var(--vk-duration-fast) ease,
+    border-color var(--vk-duration-fast) ease;
+}
+
+.vk-button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.vk-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.vk-button--sm {
+  padding: 0.45rem 0.9rem;
+  font-size: var(--vk-text-xs);
+}
+
+.vk-button--md {
+  padding: 0.65rem 1.25rem;
+  font-size: var(--vk-text-sm);
+}
+
+.vk-button--lg {
+  padding: 0.9rem 1.75rem;
+  font-size: var(--vk-text-base);
+}
+
+.vk-button--primary {
+  background: var(--vk-primary);
+  color: white;
+  box-shadow: var(--vk-shadow-sm);
+}
+
+.vk-button--primary:hover:not(:disabled) {
+  background: var(--vk-primary-strong);
+  box-shadow: var(--vk-shadow-md);
+}
+
+.vk-button--accent {
+  background: var(--vk-accent);
+  color: var(--vk-primary-strong);
+  box-shadow: var(--vk-shadow-sm);
+}
+
+.vk-button--accent:hover:not(:disabled) {
+  background: var(--vk-accent-strong);
+  color: white;
+  box-shadow: var(--vk-shadow-md);
+}
+
+.vk-button--secondary {
+  background: var(--vk-surface);
+  color: var(--vk-ink);
+  border-color: var(--vk-border-strong);
+}
+
+.vk-button--secondary:hover:not(:disabled) {
+  border-color: var(--vk-primary);
+  color: var(--vk-primary);
+}
+
+.vk-button--ghost {
+  background: transparent;
+  color: var(--vk-ink-soft);
+}
+
+.vk-button--ghost:hover:not(:disabled) {
+  background: var(--vk-surface-sunken);
+  color: var(--vk-ink);
+}
+
+.vk-button--danger {
+  background: var(--vk-status-fail-bg);
+  color: var(--vk-status-fail);
+}
+
+.vk-button--danger:hover:not(:disabled) {
+  background: var(--vk-status-fail);
+  color: white;
+}
+
+.vk-button__spinner {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: vk-spin 700ms linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vk-button__spinner {
+    animation-duration: 1400ms;
+  }
+}
+
+@keyframes vk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,56 @@
+.vk-stat {
+  background: var(--vk-surface);
+  border: 1px solid var(--vk-border);
+  border-radius: var(--vk-radius-lg);
+  padding: var(--vk-space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.vk-stat::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--vk-status-locked);
+}
+
+.vk-stat--accent::before {
+  background: var(--vk-accent);
+}
+
+.vk-stat--pass::before {
+  background: var(--vk-primary);
+}
+
+.vk-stat--fail::before {
+  background: var(--vk-status-fail);
+}
+
+.vk-stat__icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.vk-stat__label {
+  font-size: var(--vk-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--vk-ink-faint);
+  font-weight: 600;
+}
+
+.vk-stat__value {
+  font-family: var(--vk-font-display);
+  font-size: var(--vk-text-2xl);
+  font-weight: 600;
+  color: var(--vk-ink);
+}
+
+.vk-stat__trend {
+  font-size: var(--vk-text-sm);
+  color: var(--vk-ink-soft);
+}
