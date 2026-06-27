@@ -170,3 +170,39 @@
   font-size: var(--vk-text-xs);
   color: var(--vk-ink-faint);
 }
+
+.vk-login__form-subtitle {
+  font-size: var(--vk-text-sm);
+  color: var(--vk-ink-faint);
+  margin: calc(-1 * var(--vk-space-sm)) 0 var(--vk-space-md);
+  line-height: 1.5;
+}
+
+.vk-login__switch {
+  margin-top: var(--vk-space-md);
+  font-size: var(--vk-text-sm);
+  color: var(--vk-ink-faint);
+  text-align: center;
+}
+
+.vk-login__link {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--vk-primary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.vk-login__link:hover {
+  color: var(--vk-primary-strong);
+}
+
+.vk-login__link:focus-visible {
+  outline: 2px solid var(--vk-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

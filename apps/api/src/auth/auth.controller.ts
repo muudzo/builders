@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
 import { Public } from '../common/security/public.decorator';
 import { CurrentUser, type AuthUser } from '../common/security/current-user.decorator';
 
@@ -14,6 +15,17 @@ export class AuthController {
     private readonly auth: AuthService,
     private readonly config: ConfigService,
   ) {}
+
+  @Public()
+  @Post('register')
+  async register(
+    @Body() dto: RegisterDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<{ accessToken: string; user: AuthUser }> {
+    const { accessToken, refreshToken, user } = await this.auth.register(dto);
+    this.setRefreshCookie(res, refreshToken);
+    return { accessToken, user };
+  }
 
   @Public()
   @Post('login')

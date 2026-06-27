@@ -25,6 +25,13 @@ export interface LoginResponse {
   user: AuthUser;
 }
 
+export interface RegisterPayload {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+}
+
 export interface StagePaymentDto {
   id: string;
   status: PaymentStatus;

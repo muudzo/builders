@@ -1,12 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { api, ApiError, setAccessToken } from '../../lib/api';
-import type { AuthUser } from '../../lib/api-types';
+import type { AuthUser, RegisterPayload } from '../../lib/api-types';
 
 interface AuthContextValue {
   user: AuthUser | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<AuthUser>;
+  register: (payload: RegisterPayload) => Promise<AuthUser>;
   logout: () => Promise<void>;
 }
 
@@ -45,6 +46,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return response.user;
   }, []);
 
+  const register = useCallback(async (payload: RegisterPayload): Promise<AuthUser> => {
+    const response = await api.auth.register(payload);
+    setAccessToken(response.accessToken);
+    setUser(response.user);
+    return response.user;
+  }, []);
+
   const logout = useCallback(async (): Promise<void> => {
     try {
       await api.auth.logout();
@@ -57,8 +65,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, isLoading, login, logout }),
-    [user, isLoading, login, logout],
+    () => ({ user, isLoading, login, register, logout }),
+    [user, isLoading, login, register, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

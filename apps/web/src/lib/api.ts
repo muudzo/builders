@@ -16,6 +16,7 @@ import type {
   PermitDto,
   ReconciliationRowDto,
   RegistryEntryDto,
+  RegisterPayload,
   SignOffPayload,
   SignOffResponse,
   AuthUser,
@@ -118,6 +119,8 @@ export const api = {
   auth: {
     login: (email: string, password: string): Promise<LoginResponse> =>
       request('/auth/login', { method: 'POST', body: { email, password } }),
+    register: (payload: RegisterPayload): Promise<LoginResponse> =>
+      request('/auth/register', { method: 'POST', body: payload }),
     refresh: (): Promise<LoginResponse> => request('/auth/refresh', { method: 'POST' }),
     logout: (): Promise<{ ok: boolean }> => request('/auth/logout', { method: 'POST' }),
     me: (): Promise<AuthUser> => request('/auth/me'),

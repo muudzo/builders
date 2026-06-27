@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
@@ -27,8 +27,45 @@ export class AuthService {
     return argon2.hash(password, { type: argon2.argon2id });
   }
 
+  /** Public self-registration. Creates an APPLICANT and logs them straight in. */
+  async register(input: {
+    name: string;
+    email: string;
+    password: string;
+    phone?: string;
+  }): Promise<IssuedTokens> {
+    const email = input.email.toLowerCase().trim();
+    const existing = await this.prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      throw new ConflictException('An account with this email already exists');
+    }
+
+    const passwordHash = await AuthService.hash(input.password);
+    const user = await this.prisma.user.create({
+      data: {
+        name: input.name.trim(),
+        email,
+        passwordHash,
+        phone: input.phone?.trim() || null,
+        role: 'APPLICANT',
+      },
+    });
+
+    await this.audit.record({
+      actorId: user.id,
+      actorRole: 'APPLICANT',
+      action: 'AUTH_REGISTER',
+      entity: 'User',
+      entityId: user.id,
+    });
+
+    return this.issueTokens(user.id);
+  }
+
   async login(email: string, password: string): Promise<IssuedTokens> {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    const user = await this.prisma.user.findUnique({
+      where: { email: email.toLowerCase().trim() },
+    });
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
     const ok = await argon2.verify(user.passwordHash, password);
