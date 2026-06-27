@@ -35,13 +35,20 @@ export function PayStageModal({ isOpen, onClose, stage, permitRef }: PayStageMod
   const [step, setStep] = useState<PayStep>('choose-method');
   const [method, setMethod] = useState<PaymentMethod>('ECOCASH');
   const [paymentId, setPaymentId] = useState<string | null>(null);
+  const [isSimulated, setIsSimulated] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const pollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const initiate = useMutation({
     mutationFn: () => api.payments.initiate({ stageId: stage.id, method }),
     onSuccess: (response) => {
+      // Web/card payments (live Paynow) hand back a redirect to the Paynow page.
+      if (response.redirectUrl) {
+        window.location.href = response.redirectUrl;
+        return;
+      }
       setPaymentId(response.paymentId);
+      setIsSimulated(response.simulated);
       setStep('pending');
     },
     onError: (err: unknown) => {
@@ -92,6 +99,7 @@ export function PayStageModal({ isOpen, onClose, stage, permitRef }: PayStageMod
   function handleClose() {
     setStep('choose-method');
     setPaymentId(null);
+    setIsSimulated(false);
     setErrorMessage(null);
     onClose();
   }
@@ -148,9 +156,11 @@ export function PayStageModal({ isOpen, onClose, stage, permitRef }: PayStageMod
             Enter your {PAYMENT_METHOD_LABELS[method]} PIN to approve the {formatMoney(stage.amountCents, stage.currency)} payment.
           </p>
           <div className="vk-pay-modal__pulse" aria-hidden="true" />
-          <button type="button" className="vk-pay-modal__simulate-link" onClick={handleSimulateConfirm}>
-            Simulate confirmation (demo)
-          </button>
+          {isSimulated && (
+            <button type="button" className="vk-pay-modal__simulate-link" onClick={handleSimulateConfirm}>
+              Simulate confirmation (demo)
+            </button>
+          )}
         </div>
       )}
 

@@ -6,6 +6,10 @@ export interface InitiatePaymentResult {
   status: PaymentStatus;
   instructions: string;
   pollUrl: string;
+  /** True when no Paynow credentials are configured — the demo accelerator is allowed. */
+  simulated: boolean;
+  /** Present for web/card payments — redirect the payer here to complete on Paynow. */
+  redirectUrl?: string;
 }
 
 export interface PaymentStatusDto {

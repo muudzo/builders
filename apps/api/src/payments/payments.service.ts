@@ -68,12 +68,31 @@ export class PaymentsService {
       status: 'PENDING',
       instructions: paynowResult.instructions,
       pollUrl: `/api/payments/${payment.id}`,
+      simulated: paynowResult.simulated,
+      redirectUrl: paynowResult.redirectUrl,
     };
   }
 
   async getStatus(paymentId: string): Promise<PaymentStatusDto> {
     const payment = await this.prisma.payment.findUnique({ where: { id: paymentId } });
     if (!payment) throw new NotFoundException(`Payment ${paymentId} not found`);
+
+    // Real Paynow payments: poll Paynow for the authoritative status while still pending.
+    // This is what makes the frontend's existing GET-poll settle live transactions (the
+    // result-URL callback may be unreachable in local/dev, so outbound polling is the
+    // reliable path).
+    if (!payment.simulated && payment.status === 'PENDING' && payment.pollUrl) {
+      const result = await this.paynow.pollStatus(payment.pollUrl);
+      if (result.paid) {
+        const paid = await this.markPaid(payment.id, null, 'SYSTEM');
+        return this.toStatusDto(paid);
+      }
+      if (result.status === 'cancelled' || result.status === 'failed') {
+        const failed = await this.markFailed(payment.id, result.status);
+        return this.toStatusDto(failed);
+      }
+    }
+
     return this.toStatusDto(payment);
   }
 
@@ -84,6 +103,13 @@ export class PaymentsService {
 
     if (payment.status === 'PAID') {
       return this.toStatusDto(payment);
+    }
+    // Security: the force-confirm accelerator is for the simulation demo ONLY. A live Paynow
+    // payment can only be settled by polling Paynow's authoritative status.
+    if (!payment.simulated) {
+      throw new BadRequestException(
+        'Live payments cannot be force-confirmed — complete the payment on your phone or the Paynow page.',
+      );
     }
     if (payment.status !== 'PENDING') {
       throw new BadRequestException(`Payment ${paymentId} is '${payment.status}'; cannot confirm`);
@@ -100,26 +126,44 @@ export class PaymentsService {
       this.logger.warn(`Paynow callback for unknown reference: ${dto.reference}`);
       return { ok: true };
     }
+    if (payment.status !== 'PENDING') {
+      return { ok: true }; // already reconciled
+    }
 
-    const status = dto.status.toLowerCase();
-    if (status === 'paid' && payment.status !== 'PAID') {
+    // Never trust the POSTed status alone — re-poll Paynow for the authoritative result.
+    let status = dto.status.toLowerCase();
+    const pollUrl = dto.pollurl ?? payment.pollUrl ?? undefined;
+    if (!payment.simulated && pollUrl) {
+      const polled = await this.paynow.pollStatus(pollUrl);
+      status = polled.paid ? 'paid' : polled.status;
+    }
+
+    if (status === 'paid') {
       await this.markPaid(payment.id, null, 'SYSTEM');
-    } else if ((status === 'cancelled' || status === 'failed') && payment.status === 'PENDING') {
-      await this.prisma.payment.update({
-        where: { id: payment.id },
-        data: { status: status === 'cancelled' ? 'CANCELLED' : 'FAILED' },
-      });
-      await this.audit.record({
-        actorId: null,
-        actorRole: 'SYSTEM',
-        action: 'PAYMENT_FAILED',
-        entity: 'Payment',
-        entityId: payment.id,
-        metadata: { reference: dto.reference, status },
-      });
+    } else if (status === 'cancelled' || status === 'failed') {
+      await this.markFailed(payment.id, status);
     }
 
     return { ok: true };
+  }
+
+  private async markFailed(
+    paymentId: string,
+    reason: string,
+  ): Promise<{ id: string; status: string; method: string; amountCents: number; reference: string; paidAt: Date | null }> {
+    const payment = await this.prisma.payment.update({
+      where: { id: paymentId },
+      data: { status: reason === 'cancelled' ? 'CANCELLED' : 'FAILED' },
+    });
+    await this.audit.record({
+      actorId: null,
+      actorRole: 'SYSTEM',
+      action: 'PAYMENT_FAILED',
+      entity: 'Payment',
+      entityId: payment.id,
+      metadata: { reference: payment.reference, status: reason },
+    });
+    return payment;
   }
 
   private scheduleSimulatedAutoPay(paymentId: string, actorId: string, actorRole: Role): void {
