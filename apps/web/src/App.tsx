@@ -13,6 +13,7 @@ import { ReconciliationPage } from './features/dashboard/ReconciliationPage';
 import { RegistryPage } from './features/dashboard/RegistryPage';
 import { AuditTrailPage } from './features/dashboard/AuditTrailPage';
 import { CertificateVerifyPage } from './features/public/CertificateVerifyPage';
+import { PayReturnPage } from './features/public/PayReturnPage';
 import { NotFoundPage } from './features/public/NotFoundPage';
 
 const COUNCIL_ROLES = ['COUNCIL', 'MINISTRY'] as const;
@@ -23,6 +24,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/verify/:qrToken" element={<CertificateVerifyPage />} />
+        <Route path="/pay/return" element={<PayReturnPage />} />
 
         <Route element={<AppShell />}>
           <Route path="/" element={<RoleRedirect />} />

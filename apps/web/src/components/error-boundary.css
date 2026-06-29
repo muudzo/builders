@@ -1,0 +1,59 @@
+.vk-error-boundary {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--vk-space-lg);
+  background: var(--vk-bg);
+}
+
+.vk-error-boundary__card {
+  max-width: 28rem;
+  text-align: center;
+  background: var(--vk-surface);
+  border: 1px solid var(--vk-border);
+  border-radius: var(--vk-radius-md);
+  padding: var(--vk-space-2xl) var(--vk-space-xl);
+  box-shadow: var(--vk-shadow-sm);
+}
+
+.vk-error-boundary__mark {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto var(--vk-space-md);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--vk-status-fail);
+  color: white;
+  font-size: var(--vk-text-xl);
+  font-weight: 700;
+}
+
+.vk-error-boundary__card h1 {
+  font-size: var(--vk-text-xl);
+  margin-bottom: var(--vk-space-sm);
+}
+
+.vk-error-boundary__card p {
+  color: var(--vk-ink-faint);
+  margin-bottom: var(--vk-space-lg);
+}
+
+.vk-error-boundary__button {
+  background: var(--vk-primary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--vk-radius-md);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.vk-error-boundary__button:hover {
+  background: var(--vk-primary-strong);
+}
+
+.vk-error-boundary__button:focus-visible {
+  outline: 2px solid var(--vk-primary);
+  outline-offset: 2px;
+}

@@ -1,0 +1,61 @@
+.vk-pay-return {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--vk-space-lg);
+  background: var(--vk-bg);
+}
+
+.vk-pay-return__card {
+  max-width: 30rem;
+  text-align: center;
+  background: var(--vk-surface);
+  border: 1px solid var(--vk-border);
+  border-radius: var(--vk-radius-md);
+  padding: var(--vk-space-2xl) var(--vk-space-xl);
+  box-shadow: var(--vk-shadow-sm);
+}
+
+.vk-pay-return__mark {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto var(--vk-space-md);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--vk-status-pass);
+  color: white;
+  font-size: var(--vk-text-xl);
+  font-weight: 700;
+}
+
+.vk-pay-return__title {
+  font-size: var(--vk-text-xl);
+  margin-bottom: var(--vk-space-sm);
+}
+
+.vk-pay-return__body {
+  color: var(--vk-ink-faint);
+  line-height: 1.6;
+  margin-bottom: var(--vk-space-lg);
+}
+
+.vk-pay-return__cta {
+  display: inline-block;
+  background: var(--vk-primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--vk-radius-md);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--vk-duration-fast) ease;
+}
+
+.vk-pay-return__cta:hover {
+  background: var(--vk-primary-strong);
+}
+
+.vk-pay-return__cta:focus-visible {
+  outline: 2px solid var(--vk-primary);
+  outline-offset: 2px;
+}
