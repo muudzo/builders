@@ -1,4 +1,5 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
+import type { Stage } from '@prisma/client';
 import { AuditService } from '../common/audit/audit.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { StageGateService } from './stage-gate.service';
@@ -208,6 +209,41 @@ describe('StageGateService', () => {
     const permit = fakePrisma.permits.get(permitId);
     expect(permit?.status).toBe('COMPLETED');
     expect(fakePrisma.certificates).toHaveLength(1);
+  });
+
+  describe('assertActorMayAct (data isolation)', () => {
+    function stageOf(fakePrisma: FakePrismaService, id: string): Stage {
+      const stage = fakePrisma.stages.get(id);
+      if (!stage) throw new Error('seed error');
+      return stage as unknown as Stage;
+    }
+
+    it('allows an APPLICANT who owns the permit', async () => {
+      const { fakePrisma, gate } = buildHarness();
+      const { stageIds } = seedPermitWithStages(fakePrisma);
+      await expect(
+        gate.assertActorMayAct(stageOf(fakePrisma, stageIds.FOUNDATION), 'owner_1', 'APPLICANT'),
+      ).resolves.toBeUndefined();
+    });
+
+    it('forbids an APPLICANT who does NOT own the permit', async () => {
+      const { fakePrisma, gate } = buildHarness();
+      const { stageIds } = seedPermitWithStages(fakePrisma);
+      await expect(
+        gate.assertActorMayAct(stageOf(fakePrisma, stageIds.FOUNDATION), 'someone_else', 'APPLICANT'),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('does not restrict COUNCIL or SYSTEM actors', async () => {
+      const { fakePrisma, gate } = buildHarness();
+      const { stageIds } = seedPermitWithStages(fakePrisma);
+      await expect(
+        gate.assertActorMayAct(stageOf(fakePrisma, stageIds.FOUNDATION), 'clerk', 'COUNCIL'),
+      ).resolves.toBeUndefined();
+      await expect(
+        gate.assertActorMayAct(stageOf(fakePrisma, stageIds.FOUNDATION), null, 'SYSTEM'),
+      ).resolves.toBeUndefined();
+    });
   });
 
   it('returns a FAILed stage to remediation via re-request without re-payment', async () => {
