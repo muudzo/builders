@@ -95,6 +95,9 @@ class FakePrismaService {
       return record;
     },
   };
+
+  /** Array form of $transaction: the eager fake ops are already in-flight; await them in order. */
+  $transaction = async <T>(ops: Promise<T>[]): Promise<T[]> => Promise.all(ops);
 }
 
 function buildHarness() {

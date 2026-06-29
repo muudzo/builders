@@ -1,5 +1,8 @@
-import { IsIn, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsIn, IsNotEmpty, IsNumber, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 import { INSPECTION_RESULTS, type InspectionResult } from '../../common/domain';
+
+/** Cap photo evidence payload (data-URL demo stand-in). Body parser limit is raised to match. */
+const MAX_PHOTO_LENGTH = 1_500_000;
 
 /** Body for POST /inspections/sign-off. */
 export class SignOffDto {
@@ -17,13 +20,18 @@ export class SignOffDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(MAX_PHOTO_LENGTH)
   photoUrl?: string;
 
   @IsOptional()
   @IsNumber()
+  @Min(-90)
+  @Max(90)
   gpsLat?: number;
 
   @IsOptional()
   @IsNumber()
+  @Min(-180)
+  @Max(180)
   gpsLng?: number;
 }

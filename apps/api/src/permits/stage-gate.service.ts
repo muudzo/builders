@@ -116,56 +116,47 @@ export class StageGateService {
       throw new BadRequestException(`Stage ${stage.key} already has a recorded inspection`);
     }
 
-    await this.prisma.inspection.create({
-      data: {
-        permitId: stage.permitId,
-        stageId: stage.id,
-        inspectorId: input.inspectorId,
-        result: input.result,
-        notes: input.notes,
-        photoUrl: input.photoUrl,
-        gpsLat: input.gpsLat,
-        gpsLng: input.gpsLng,
-      },
-    });
+    const newStatus = input.result === 'FAIL' ? 'INSPECTED_FAIL' : 'INSPECTED_PASS';
 
-    if (input.result === 'FAIL') {
-      const failed = await this.prisma.stage.update({
-        where: { id: stage.id },
-        data: { status: 'INSPECTED_FAIL' },
-      });
-      await this.audit.record({
-        actorId: input.actorId,
-        actorRole: input.actorRole,
-        action: 'INSPECTION_FAILED',
-        entity: 'Stage',
-        entityId: stage.id,
-        metadata: { permitId: stage.permitId, stageKey: stage.key },
-      });
-      return { stage: failed, nextStageKey: null, certificate: null };
-    }
+    // Atomic: the inspection record and the stage's status change commit together, so an
+    // inspection can never exist without the matching gate transition (or vice versa).
+    const [, updatedStage] = await this.prisma.$transaction([
+      this.prisma.inspection.create({
+        data: {
+          permitId: stage.permitId,
+          stageId: stage.id,
+          inspectorId: input.inspectorId,
+          result: input.result,
+          notes: input.notes,
+          photoUrl: input.photoUrl,
+          gpsLat: input.gpsLat,
+          gpsLng: input.gpsLng,
+        },
+      }),
+      this.prisma.stage.update({ where: { id: stage.id }, data: { status: newStatus } }),
+    ]);
 
-    const passed = await this.prisma.stage.update({
-      where: { id: stage.id },
-      data: { status: 'INSPECTED_PASS' },
-    });
     await this.audit.record({
       actorId: input.actorId,
       actorRole: input.actorRole,
-      action: 'INSPECTION_PASSED',
+      action: input.result === 'FAIL' ? 'INSPECTION_FAILED' : 'INSPECTION_PASSED',
       entity: 'Stage',
       entityId: stage.id,
       metadata: { permitId: stage.permitId, stageKey: stage.key },
     });
 
+    if (input.result === 'FAIL') {
+      return { stage: updatedStage, nextStageKey: null, certificate: null };
+    }
+
     const key = stage.key as StageKey;
     if (isFinalStage(key)) {
       const certificate = await this.issueCertificate(stage.permitId, input.actorId, input.actorRole);
-      return { stage: passed, nextStageKey: null, certificate };
+      return { stage: updatedStage, nextStageKey: null, certificate };
     }
 
     const unlockedKey = await this.unlockNextStage(stage.permitId, key, input.actorId, input.actorRole);
-    return { stage: passed, nextStageKey: unlockedKey, certificate: null };
+    return { stage: updatedStage, nextStageKey: unlockedKey, certificate: null };
   }
 
   /** Return a failed stage to remediation: INSPECTED_FAIL -> PAID_AWAITING_INSPECTION. No re-pay. */

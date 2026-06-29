@@ -2,11 +2,16 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
+import { json, urlencoded } from 'express';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 
+const BODY_LIMIT = '2mb';
+
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
+  // Disable Nest's default body parsers so we can set an explicit, bounded limit (photo
+  // evidence arrives as a data-URL and exceeds Express's 100kb default).
+  const app = await NestFactory.create(AppModule, { bodyParser: false });
   const config = app.get(ConfigService);
 
   app.setGlobalPrefix('api');
@@ -14,6 +19,8 @@ async function bootstrap(): Promise<void> {
   // Security headers. crossOriginResourcePolicy relaxed so the Vite dev client can reach the API.
   app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
   app.use(cookieParser());
+  app.use(json({ limit: BODY_LIMIT }));
+  app.use(urlencoded({ extended: true, limit: BODY_LIMIT }));
 
   // CORS allowlist — credentials enabled for the httpOnly refresh cookie.
   app.enableCors({
