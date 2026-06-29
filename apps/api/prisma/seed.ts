@@ -102,6 +102,10 @@ async function main(): Promise<void> {
 
   const inspectorIds = [moyo.id, ncube.id];
 
+  // Map applicant users to the permits they own (by display name) for data-isolation scoping.
+  const applicantUsers = await prisma.user.findMany({ where: { role: 'APPLICANT' } });
+  const ownerIdByName = new Map(applicantUsers.map((u) => [u.name, u.id]));
+
   // --- Permits ---------------------------------------------------------------
   const specs: PermitSpec[] = [
     { ref: 'BCC-2026-00118', standNumber: 'Stand 4821 Hillside', suburb: 'Hillside', projectType: 'Single residential', ownerName: 'Thabo Dube', ownerPhone: '+263771111001', builderRegNumber: 'BCC/2021/0412', builderName: 'Sibanda Construction (Pvt) Ltd', builderStatus: 'VALID', progress: { passed: 0, currentState: 'AWAITING_PAYMENT' }, createdDaysAgo: 2 },
@@ -114,7 +118,7 @@ async function main(): Promise<void> {
   ];
 
   for (const spec of specs) {
-    await createPermit(council.id, inspectorIds, spec);
+    await createPermit(council.id, inspectorIds, spec, ownerIdByName.get(spec.ownerName) ?? null);
   }
 
   const counts = {
@@ -128,7 +132,12 @@ async function main(): Promise<void> {
   console.log('Seed complete:', counts);
 }
 
-async function createPermit(councilId: string, inspectorIds: string[], spec: PermitSpec): Promise<void> {
+async function createPermit(
+  councilId: string,
+  inspectorIds: string[],
+  spec: PermitSpec,
+  ownerUserId: string | null,
+): Promise<void> {
   const permit = await prisma.permit.create({
     data: {
       ref: spec.ref,
@@ -137,6 +146,7 @@ async function createPermit(councilId: string, inspectorIds: string[], spec: Per
       projectType: spec.projectType,
       ownerName: spec.ownerName,
       ownerPhone: spec.ownerPhone,
+      ownerUserId,
       builderRegNumber: spec.builderRegNumber,
       builderName: spec.builderName,
       builderStatus: spec.builderStatus,

@@ -37,8 +37,9 @@ model User {
   inspectorId  String?  @unique
   createdAt    DateTime @default(now())
 
-  council   Council?   @relation(fields: [councilId], references: [id])
-  inspector Inspector? @relation(fields: [inspectorId], references: [id])
+  council      Council?   @relation(fields: [councilId], references: [id])
+  inspector    Inspector? @relation(fields: [inspectorId], references: [id])
+  ownedPermits Permit[]   @relation("OwnerPermits")
 }
 
 /// Building inspector with a home base (for nearest-job routing).
@@ -84,9 +85,11 @@ model Permit {
   builderStatus   String // snapshot of registry status at approval time
   status          String   @default("APPROVED")
   councilId       String
+  ownerUserId     String? // the APPLICANT who owns this permit (null for council-managed)
   createdAt       DateTime @default(now())
 
   council     Council      @relation(fields: [councilId], references: [id])
+  owner       User?        @relation("OwnerPermits", fields: [ownerUserId], references: [id])
   stages      Stage[]
   payments    Payment[]
   inspections Inspection[]

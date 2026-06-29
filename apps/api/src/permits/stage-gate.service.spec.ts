@@ -20,6 +20,7 @@ interface FakePermit {
   id: string;
   ref: string;
   status: string;
+  ownerUserId: string | null;
 }
 
 interface FakeInspection {
@@ -109,7 +110,7 @@ function buildHarness() {
 
 function seedPermitWithStages(fakePrisma: FakePrismaService): { permitId: string; stageIds: Record<string, string> } {
   const permitId = 'permit_1';
-  fakePrisma.permits.set(permitId, { id: permitId, ref: 'BCC-2026-00001', status: 'APPROVED' });
+  fakePrisma.permits.set(permitId, { id: permitId, ref: 'BCC-2026-00001', status: 'APPROVED', ownerUserId: 'owner_1' });
 
   const defs = [
     { key: 'FOUNDATION', order: 0, status: 'PAID_AWAITING_INSPECTION' },

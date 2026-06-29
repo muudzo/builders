@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { Stage } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../common/audit/audit.service';
@@ -50,6 +50,18 @@ export class StageGateService {
     }
   }
 
+  /** APPLICANTs may only act on stages of permits they own; other roles act broadly. */
+  async assertActorMayAct(stage: Stage, actorId: string | null, actorRole: Role | 'SYSTEM'): Promise<void> {
+    if (actorRole !== 'APPLICANT') return;
+    const permit = await this.prisma.permit.findUnique({
+      where: { id: stage.permitId },
+      select: { ownerUserId: true },
+    });
+    if (!permit || permit.ownerUserId !== actorId) {
+      throw new ForbiddenException('You can only act on your own permit');
+    }
+  }
+
   /**
    * Mark a stage PAID_AWAITING_INSPECTION after its fee has been paid.
    * Requires the stage to currently be AWAITING_PAYMENT.
@@ -82,6 +94,7 @@ export class StageGateService {
   /** Book an inspection date. Requires PAID_AWAITING_INSPECTION. */
   async book(stageId: string, date: Date, actorId: string, actorRole: Role): Promise<Stage> {
     const stage = await this.getStageOrThrow(stageId);
+    await this.assertActorMayAct(stage, actorId, actorRole);
     this.assertStatus(stage, ['PAID_AWAITING_INSPECTION']);
 
     const updated = await this.prisma.stage.update({
@@ -162,6 +175,7 @@ export class StageGateService {
   /** Return a failed stage to remediation: INSPECTED_FAIL -> PAID_AWAITING_INSPECTION. No re-pay. */
   async reRequest(stageId: string, actorId: string, actorRole: Role): Promise<Stage> {
     const stage = await this.getStageOrThrow(stageId);
+    await this.assertActorMayAct(stage, actorId, actorRole);
     this.assertStatus(stage, ['INSPECTED_FAIL']);
 
     const updated = await this.prisma.stage.update({

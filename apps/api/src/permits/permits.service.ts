@@ -18,20 +18,26 @@ export class PermitsService {
     private readonly registry: RegistryService,
   ) {}
 
-  async findAll(): Promise<PermitDto[]> {
+  /** APPLICANTs see only permits they own; COUNCIL/MINISTRY see all in the tenant. */
+  async findAll(actorId: string, actorRole: Role): Promise<PermitDto[]> {
+    const where = actorRole === 'APPLICANT' ? { ownerUserId: actorId } : {};
     const permits = await this.prisma.permit.findMany({
+      where,
       include: PERMIT_INCLUDE,
       orderBy: { createdAt: 'desc' },
     });
     return permits.map((permit) => toPermitDto(permit as PermitWithRelations));
   }
 
-  async findByRef(ref: string): Promise<PermitDto> {
+  async findByRef(ref: string, actorId: string, actorRole: Role): Promise<PermitDto> {
     const permit = await this.prisma.permit.findUnique({
       where: { ref },
       include: PERMIT_INCLUDE,
     });
-    if (!permit) throw new NotFoundException(`Permit ${ref} not found`);
+    // Return 404 (not 403) for someone else's permit so we never confirm its existence.
+    if (!permit || (actorRole === 'APPLICANT' && permit.ownerUserId !== actorId)) {
+      throw new NotFoundException(`Permit ${ref} not found`);
+    }
     return toPermitDto(permit as PermitWithRelations);
   }
 
@@ -59,6 +65,7 @@ export class PermitsService {
         builderStatus: verification.status,
         status: 'APPROVED',
         councilId: council.id,
+        ownerUserId: actorRole === 'APPLICANT' ? actorId : null,
         stages: {
           create: STAGE_DEFINITIONS.map((def) => ({
             key: def.key,

@@ -23,6 +23,7 @@ export class PaymentsService {
 
   async initiate(dto: InitiatePaymentDto, actorId: string, actorRole: Role): Promise<InitiatePaymentResult> {
     const stage = await this.stageGate.getStageOrThrow(dto.stageId);
+    await this.stageGate.assertActorMayAct(stage, actorId, actorRole);
     this.stageGate.assertStatus(stage, ['AWAITING_PAYMENT']);
 
     const reference = `VAKA-${stage.id.slice(-6)}-${Date.now().toString(36).toUpperCase()}`;

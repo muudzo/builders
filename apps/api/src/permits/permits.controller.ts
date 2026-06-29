@@ -9,21 +9,17 @@ import type { PermitDto } from './permits.types';
 export class PermitsController {
   constructor(private readonly permits: PermitsService) {}
 
-  /**
-   * Demo scope: COUNCIL/MINISTRY/APPLICANT see all seeded permits. In production this would
-   * be scoped to `WHERE ownerPhone = currentUser.phone` (or a real owner relation) for APPLICANT,
-   * and to the inspector's council for INSPECTOR — deferred here since auth has no owner linkage yet.
-   */
+  /** APPLICANT sees only their own permits; COUNCIL/MINISTRY see all (enforced in the service). */
   @Roles('APPLICANT', 'COUNCIL', 'MINISTRY')
   @Get()
-  findAll(): Promise<PermitDto[]> {
-    return this.permits.findAll();
+  findAll(@CurrentUser() user: AuthUser): Promise<PermitDto[]> {
+    return this.permits.findAll(user.sub, user.role);
   }
 
   @Roles('APPLICANT', 'COUNCIL', 'MINISTRY')
   @Get(':ref')
-  findOne(@Param('ref') ref: string): Promise<PermitDto> {
-    return this.permits.findByRef(ref);
+  findOne(@Param('ref') ref: string, @CurrentUser() user: AuthUser): Promise<PermitDto> {
+    return this.permits.findByRef(ref, user.sub, user.role);
   }
 
   @Roles('COUNCIL', 'APPLICANT')
